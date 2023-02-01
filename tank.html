@@ -1,0 +1,48 @@
+<html>
+  <canvas id="gameCanvas" width="500" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let playerX = 250;
+    let playerY = 250;
+    let playerSpeed = 0;
+    let playerAngle = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // draw the player's tank
+    function drawPlayerTank() {
+      ctx.save();
+      ctx.translate(playerX, playerY);
+      ctx.rotate(playerAngle);
+      ctx.fillStyle = "gray";
+      ctx.fillRect(-10, -15, 20, 30);
+      ctx.fillRect(-15, -10, 30, 20);
+      ctx.restore();
+    }
+
+    // update the player's tank angle towards the mouse
+    function updatePlayerTank() {
+      let dx = mouseX - playerX;
+      let dy = mouseY - playerY;
+      playerAngle = Math.atan2(dy, dx);
+      playerX += Math.cos(playerAngle) * playerSpeed;
+      playerY += Math.sin(playerAngle) * playerSpeed;
+    }
+
+    canvas.onmousemove = function(event) {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+    };
+
+    // game loop
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      updatePlayerTank();
+      drawPlayerTank();
+      requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+  </script>
+</html>
