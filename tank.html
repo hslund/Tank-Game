@@ -1,7 +1,18 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tank - Game</title>
+</head>
+<body>
+  
   <canvas id="gameCanvas" width="500" height="500"></canvas>
   <script>
     const canvas = document.getElementById("gameCanvas");
+    canvas.width = 500
+    canvas.height = 500
     const ctx = canvas.getContext("2d");
 //
     let playerX = 250;
@@ -10,8 +21,7 @@
     let playerAngle = 0;
     let mouseX = 0;
     let mouseY = 0;
-    
-    // draw the player's tank
+
     function drawPlayerTank() {
       ctx.save();
       ctx.translate(playerX, playerY);
@@ -22,13 +32,96 @@
       ctx.restore();
     }
 
-    // update the player's tank angle towards the mouse
+        let left = false
+        let right = false
+        let up = false
+        let down = false
+
+        document.addEventListener("keydown", event => {
+          if (event.key === "a") { left = true }
+          if (event.key === "d") { right = true }
+          if (event.key === "w") { up = true } 
+          if (event.key === "s") { down = true }
+
+        })
+        document.addEventListener("keyup", event => {
+          if (event.key === "a") { left = false }
+          if (event.key === "d") { right = false }
+          if (event.key === "w") { up = false }
+          if (event.key === "s") { down = false }
+
+
+        })
+
+        // add event listener to game canvas element
+canvas.addEventListener('mousedown', shootProjectile);
+
+// function to handle left mouse click event
+function shootProjectile(event) {
+  if (event.button === 0) { // left mouse button
+    // get current tank position
+    let tankX = playerX;
+    let tankY = playerY;
+
+    // create new projectile object
+    let projectile = {
+      x: tankX,
+      y: tankY,
+      velocityX: 10, // adjust this value to change projectile speed
+      velocityY: 0, // adjust this value to change projectile trajectory
+      radius: 5, // adjust this value to change projectile size
+    };
+
+    // add new projectile object to array
+    projectiles.push(projectile);
+  }
+}
+
+// game update loop
+function update() {
+  // update position of each projectile object
+  for (let i = 0; i < projectiles.length; i++) {
+    let projectile = projectiles[i];
+    projectile.x += projectile.velocityX;
+    projectile.y += projectile.velocityY;
+
+    // check for collisions with other game objects
+    // (code not shown)
+
+    // remove off-screen or collided projectile objects
+    if (projectile.x < 0 || projectile.x > canvas.width ||
+        projectile.y < 0 || projectile.y > canvas.height) {
+      projectiles.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+
+
+
     function updatePlayerTank() {
       let dx = mouseX - playerX;
       let dy = mouseY - playerY;
       playerAngle = Math.atan2(dy, dx);
       playerX += Math.cos(playerAngle) * playerSpeed;
       playerY += Math.sin(playerAngle) * playerSpeed;
+    }
+
+    function tankMovement() {
+      if (right) {
+          playerX++
+      }
+      if (left) {
+          playerX--
+      }
+      if (up) {
+          playerY--
+      }
+      if (down) {
+          playerY++
+      }
+
     }
 
     canvas.onmousemove = function(event) {
@@ -41,8 +134,12 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       updatePlayerTank();
       drawPlayerTank();
+      tankMovement()
+      update()
+      shootProjectile()
       requestAnimationFrame(gameLoop);
     }
     gameLoop();
   </script>
+  </body>
 </html>
