@@ -4,16 +4,59 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="tankstyle.css">
   <title>Tank - Game</title>
 </head>
 <body>
+  <div id="start-menu">
+    <h1 id = "logo">Codename: Tanks</h1>
+    <button type="button" onclick="playGame()" id="buttons"> Start game</button>
+    <button type="button" onclick="openSettings()" id="buttons"> Options</button>
+    <!--<button type="button" onclick="muteAudio()" id="buttons"> Mute audio</button>-->
+    <button type="button" onclick="quitGame()" id="buttons"> Quit</button>
   
+    </div>
+
+    
+    <div id="options-menu">
+      <div id="music-controls">
+          <h2>Music volume</h2>
+        <input type="range" id="volume-slider" min="0" max="0.5" step="0.1" value="1">
+      </div>
+      <audio id="game-audio" loop>
+        <source src="audio/tankgame-maintheme.wav" type="audio/wav">
+      </audio>
+      <button type="button" onclick="starerMenu()" id="buttons"> Back</button>
+
+    </div>
   <canvas id="gameCanvas" width="500" height="500"></canvas>
+
+
   <script>
     const canvas = document.getElementById("gameCanvas");
-    canvas.width = 500
-    canvas.height = 500
+    canvas.width = 1300
+    canvas.height = 900
     const ctx = canvas.getContext("2d");
+    const gameAudio = document.getElementById("game-audio");
+    const volumeSlider = document.getElementById("volume-slider");
+    const startMenu = document.getElementById("start-menu");
+    const optionMenu = document.getElementById("options-menu");
+
+    volumeSlider.addEventListener("input", () => {
+      gameAudio.volume = volumeSlider.value;
+    });
+    volumeSlider.style.display = "none";
+    optionMenu.style.display = "none";
+
+
+ 
+
+
+    // Play the audio file
+    gameAudio.play();
+    gameAudio.volume = 0.5;
+    gameAudio.loop = true;
+
 //
     let playerX = 250;
     let playerY = 250;
@@ -129,6 +172,8 @@ function update() {
       mouseY = event.clientY;
     };
 
+   
+
     // game loop
     function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -139,7 +184,39 @@ function update() {
       shootProjectile()
       requestAnimationFrame(gameLoop);
     }
-    gameLoop();
+
+    function starerMenu() {
+      startMenu.style.display = "block"
+      optionMenu.style.display = "none";
+      volumeSlider.style.display = "none";
+
+    }
+
+    function openSettings() {
+      console.log("åpner settings...");
+      startMenu.style.display = "none";
+      optionMenu.style.display = "block";
+      volumeSlider.style.display = "block";
+    }
+
+    function quitGame() {
+      console.log("Går ut av spillet....")
+      
+    }
+    function muteAudio() {
+      gameAudio.pause();
+    }
+
+
+    function playGame() {
+      startMenu.style.display = "none"
+
+      gameLoop()
+    }
+
+
+
+    
   </script>
   </body>
 </html>
